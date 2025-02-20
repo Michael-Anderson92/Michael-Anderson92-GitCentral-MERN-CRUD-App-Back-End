@@ -9,6 +9,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  email: {
+    type: String, //verify email format
+    required: true
+  },
+  posts: {
+    //required false users can have 0posts
+
+    
+  }
 });
 
 userSchema.set('toJSON', {
@@ -17,4 +26,5 @@ userSchema.set('toJSON', {
   }
 });
 
-module.exports = mongoose.model('User', userSchema);
+userModel = mongoose.model('User', userSchema);
+module.exports = userModel
