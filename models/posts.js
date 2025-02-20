@@ -5,25 +5,26 @@ const PostSchema = new mongoose.Schema({
 
     title: {
         type: String,
-        required: True
+        required: true
     },
 
     createdAt: {
         type: Date,
-        required: True,
+        required: true,
         default: Date.now()
     },
 
     contents: {
         type: String,
-        required: True
+        required: true
     },
     comments: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref:'Comments'
-    }
-
-
+        type: [{
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Comment'
+        }],
+        default: []
+      }
 
 })
 

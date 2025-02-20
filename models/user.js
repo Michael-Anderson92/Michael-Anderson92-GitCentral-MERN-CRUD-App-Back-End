@@ -15,9 +15,11 @@ const userSchema = new mongoose.Schema({
     required: true
   }, //add forums
   posts: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Posts'
-    //required false users can have 0posts
+    type: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Post'
+    }],
+    default: []
   }
 });
 

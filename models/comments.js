@@ -6,10 +6,16 @@ const commentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    contents: {
+    createdAt:{
+        type: Date,
+        required: true,
+        default: Date.now()
+    },
+    
+    contents: { 
         type: String,
         required: true,
-        maxLength: 350 // max of 350 characters
+        maxLength: 600 // max of 600 characters
     }
 })
 

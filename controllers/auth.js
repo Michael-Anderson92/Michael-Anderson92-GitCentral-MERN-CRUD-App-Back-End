@@ -12,6 +12,7 @@ router.post('/sign-up', async (req, res) => {
   try {
     const userInDatabase = await User.findOne({ username: req.body.username });
     const emailInDatabase = await User.findOne({email: req.body.email})
+
     if (!emailRegex.test(req.body.email)){ //checking to see if in correct email format
       return res.status(409).json({err:'please enter a valid email' })
     }
@@ -21,13 +22,14 @@ router.post('/sign-up', async (req, res) => {
     if (emailInDatabase){
       return res.status(409).json({err:'email already associated with an account'})
     }
-    
+
     const user = await User.create({
       username: req.body.username,
       hashedPassword: bcrypt.hashSync(req.body.password, saltRounds),
       email: req.body.email,
      posts: [] //blank list for now
     });
+    console.log('Account created', req.body.username, req.body.email)
 
     const payload = { username: user.username, _id: user._id };
 
