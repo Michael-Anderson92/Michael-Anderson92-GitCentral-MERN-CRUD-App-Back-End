@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const User = require('../models/user');
 
@@ -10,14 +11,22 @@ const saltRounds = 12;
 router.post('/sign-up', async (req, res) => {
   try {
     const userInDatabase = await User.findOne({ username: req.body.username });
-    
+    const emailInDatabase = await User.findOne({email: req.body.email})
+    if (!emailRegex.test(req.body.email)){ //checking to see if in correct email format
+      return res.status(409).json({err:'please enter a valid email' })
+    }
     if (userInDatabase) {
       return res.status(409).json({err: 'Username already taken.'});
+    }
+    if (emailInDatabase){
+      return res.status(409).json({err:'email already associated with an account'})
     }
     
     const user = await User.create({
       username: req.body.username,
-      hashedPassword: bcrypt.hashSync(req.body.password, saltRounds)
+      hashedPassword: bcrypt.hashSync(req.body.password, saltRounds),
+      email: req.body.email,
+     posts: [] //blank list for now
     });
 
     const payload = { username: user.username, _id: user._id };

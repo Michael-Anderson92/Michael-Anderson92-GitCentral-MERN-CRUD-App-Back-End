@@ -13,6 +13,9 @@ const logger = require('morgan');
 const authRouter = require('./controllers/auth');
 const testJwtRouter = require('./controllers/test-jwt');
 const usersRouter = require('./controllers/users');
+//const commentRouter = require('./controllers/comments')
+//const postRouter = require('./controllers/posts')
+
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI);
@@ -29,6 +32,7 @@ app.use(logger('dev'));
 // Routes
 app.use('/auth', authRouter);
 app.use('/test-jwt', testJwtRouter);
+//app.use()
 
 // if you want to verify whole controllers
 // import verifytoken above
