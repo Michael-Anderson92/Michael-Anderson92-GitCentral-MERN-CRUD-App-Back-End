@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const User = require('../models/user');
+const User = require('../models/users');
 
 const saltRounds = 12;
 

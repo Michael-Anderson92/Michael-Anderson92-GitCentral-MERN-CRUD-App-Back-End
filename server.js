@@ -13,10 +13,10 @@ const logger = require('morgan');
 // Import routers
 
 const authRouter = require('./controllers/auth');
-const testJwtRouter = require('./controllers/test-jwt');
+//const testJwtRouter = require('./controllers/test-jwt');
 const usersRouter = require('./controllers/users');
-//const commentRouter = require('./controllers/comments')
-//const postRouter = require('./controllers/posts')
+const forumsRouter = require('./controllers/forums')
+const postsRouter = require('./controllers/posts')
 
 
 // Connect to MongoDB
@@ -31,17 +31,20 @@ app.use(cors());
 app.use(express.json());
 app.use(logger('dev'));
 
-// Routes
+// Routes - connects route to controller
 app.use('/auth', authRouter);
-app.use('/test-jwt', testJwtRouter);
+//app.use('/test-jwt', testJwtRouter);
 
 
 // if you want to verify whole controllers
 // import verifytoken above
 // then just set it up as a middleware function like below
-// app.use(verifyToken)
+
 app.use('/users', usersRouter);
-//app.use(verifyToken)
+
+app.use('/forums', forumsRouter)
+// app.use(verifyToken)
+//app.use('/posts', postsRouter)
 
 // Start the server and listen on port 3000
 app.listen(3000, () => {

@@ -1,24 +1,27 @@
 const mongoose = require('mongoose')
 
 const forumSchema = new mongoose.Schema({
-    forumUsername: {
-        type: { //not sure if this is rigt
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
+    userId: {
+
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    creater: {
+        type: String,
         required: true
     },
     createdAt: {
         type: Date,
         default: Date.now
     },
-    forumTitle: {
+    title: {
         type: String,
         required: true,
         minLength: 30,
         maxLength: 100,
     },
-    forumContents: {
+    contents: {
         type: String,
         default: ''
 
@@ -30,7 +33,7 @@ const forumSchema = new mongoose.Schema({
         }],
         default: []
     },
-    forumLikes: {
+    likes: {
         type: Number,
         default: 0
     }
