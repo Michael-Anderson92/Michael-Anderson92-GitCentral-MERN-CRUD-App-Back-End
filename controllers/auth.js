@@ -8,7 +8,7 @@ const User = require('../models/user');
 
 const saltRounds = 12;
 
-router.post('/sign-up', async (req, res) => {
+router.post('/sign-up', async (req, res) => {//tested and works
   try {
     const userInDatabase = await User.findOne({ username: req.body.username });
     const emailInDatabase = await User.findOne({email: req.body.email})
@@ -29,7 +29,7 @@ router.post('/sign-up', async (req, res) => {
       email: req.body.email,
      posts: [] //blank list for now
     });
-    console.log('Account created', req.body.username, req.body.email)
+    console.log('Account created', user)
 
     const payload = { username: user.username, _id: user._id };
 

@@ -1,6 +1,28 @@
 const mongoose = require('mongoose')
 
 
+const commentSchema = new mongoose.Schema({
+
+    commentUsername: { //username of commenter
+        type: String,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        required: true,
+        default: Date.now
+    },
+    commentContents: {
+        type: String,
+        required: true,
+        maxLength: 600 // max of 600 characters
+    },
+    commentLikes: {
+        type: Number,
+        default: 0
+    }
+})
+
 const PostSchema = new mongoose.Schema({
 
     title: {
@@ -11,20 +33,21 @@ const PostSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         required: true,
-        default: Date.now()
+        default: Date.now
     },
 
-    contents: {
+    postContents: {
         type: String,
         required: true
     },
+    postLikes: {
+        type: Number,
+        default: 0
+    },
     comments: {
-        type: [{
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Comment'
-        }],
+        type: [commentSchema],
         default: []
-      }
+    }
 
 })
 

@@ -8,8 +8,10 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
+//import verifyToken from './middleware/verify-token'
 
 // Import routers
+
 const authRouter = require('./controllers/auth');
 const testJwtRouter = require('./controllers/test-jwt');
 const usersRouter = require('./controllers/users');
@@ -32,13 +34,14 @@ app.use(logger('dev'));
 // Routes
 app.use('/auth', authRouter);
 app.use('/test-jwt', testJwtRouter);
-//app.use()
+
 
 // if you want to verify whole controllers
 // import verifytoken above
 // then just set it up as a middleware function like below
 // app.use(verifyToken)
 app.use('/users', usersRouter);
+//app.use(verifyToken)
 
 // Start the server and listen on port 3000
 app.listen(3000, () => {

@@ -13,15 +13,18 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String, //verify email format
     required: true
-  }, //add forums
-  posts: {
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Post'
-    }],
-    default: []
-  }
-});
+  },
+  profileImg: {
+    type: String,
+    default: 'https://imgur.com/zC8sER6' //seaturtle deafult
+  },
+  bio: {
+  type: String,
+  default: '',
+  maxLength: 400
+},
+
+})
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
