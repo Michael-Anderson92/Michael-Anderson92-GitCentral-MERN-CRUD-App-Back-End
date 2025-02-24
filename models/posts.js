@@ -3,21 +3,21 @@ const mongoose = require('mongoose')
 
 const commentSchema = new mongoose.Schema({
 
-    commentUsername: { //username of commenter
+    creator: { //username of commenter
         type: String,
         required: true
     },
     createdAt: {
         type: Date,
         required: true,
-        default: Date.now
+        default: Date.now //look into time zone
     },
-    commentContents: {
+    contents: {
         type: String,
         required: true,
         maxLength: 600 // max of 600 characters
     },
-    commentLikes: {
+    likes: {
         type: Number,
         default: 0
     }
@@ -36,11 +36,11 @@ const PostSchema = new mongoose.Schema({
         default: Date.now
     },
 
-    postContents: {
+    contents: {
         type: String,
         required: true
     },
-    postLikes: {
+    likes: {
         type: Number,
         default: 0
     },
