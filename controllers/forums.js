@@ -59,8 +59,8 @@ router.get('/:forumsId', async function (req, res) {
         console.log('look at form id get request')
     }
 })
-
-router.put('/:forumsId', async function(req,res){
+// edit needs token
+router.put('/:forumsId',verifyToken, async function(req,res){
     console.log('put')
     try{
         const forumEdit = await Forum.findByIdAndUpdate(req.params.forumsId, req.body)
