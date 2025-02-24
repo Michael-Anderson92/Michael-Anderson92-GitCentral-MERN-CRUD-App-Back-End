@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 
 const commentSchema = new mongoose.Schema({
-
+    
     creator: { //username of commenter
         type: String,
         required: true
@@ -24,6 +24,11 @@ const commentSchema = new mongoose.Schema({
 })
 
 const PostSchema = new mongoose.Schema({
+    forum: { //verify forum key is getting sent when post is created
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Forum',
+        required: true
+    },
 
     title: {
         type: String,

@@ -13,7 +13,7 @@ const forumSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now //timezone UTC
     },
     title: {
         type: String,
@@ -24,7 +24,6 @@ const forumSchema = new mongoose.Schema({
     contents: {
         type: String,
         default: ''
-
     },
     posts: {
         type: [{

@@ -44,7 +44,7 @@ app.use('/users', usersRouter);
 
 app.use('/forums', forumsRouter)
 // app.use(verifyToken)
-//app.use('/posts', postsRouter)
+app.use('/posts', postsRouter)
 
 // Start the server and listen on port 3000
 app.listen(3000, () => {

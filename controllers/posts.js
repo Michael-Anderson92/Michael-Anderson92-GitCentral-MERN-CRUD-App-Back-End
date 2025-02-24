@@ -1,7 +1,9 @@
-/*const express = require('express')
+const express = require('express')
 const router = express.Router()
-const verifytoken = require('')
-Post = require('../models/posts')
+const verifytoken = require('../middleware/verify-token')
+const Post = require('../models/posts')
+
+
 //verifytoken routes 
 /*
 - post forum
@@ -12,19 +14,21 @@ Post = require('../models/posts')
 -get routes -index
 -get routes by ID
 
-
+*/
 router.post('/', verifytoken, async function (req, res) {
     console.log(req.body)
     try {
-        newPost = await Post.create({
+        const newPost = await Post.create({
             userId: req.user._id,
             creator: req.user.username,
             ...req.body
-        }
-    } catch {
-
-    }
-    )
+        })
+        console.log(newPost)
+        res.json(newPost)
+    } catch (err) {
+        return res.status(500).json({ err: err.message })
+    }})
+/*
 // not done - index 
 router.get('/', async function (req, res) {
     try {
@@ -42,3 +46,4 @@ router.get('/:postId', async function (req, res) {
     }
 })
 */
+module.exports = router
