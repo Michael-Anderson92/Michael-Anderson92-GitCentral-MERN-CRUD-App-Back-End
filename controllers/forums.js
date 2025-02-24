@@ -48,10 +48,10 @@ router.get('/', async function (req, res) {
         console.log('look at index routing on forum')
     }
 })
-//get Id
-router.get('/:forurmsId', async function (req, res) {
+//get Id - no token
+router.get('/:forumsId', async function (req, res) {
     try {
-        const selectedForum = await Forum.findById(req.params.forurmsId)
+        const selectedForum = await Forum.findById(req.params.forumsId)
         res.json(selectedForum)
         console.log(selectedForum)
     } catch (err) {
