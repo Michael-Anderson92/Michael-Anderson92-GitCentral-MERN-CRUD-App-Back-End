@@ -2,10 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const Forum = require('../models/forums')
-
 const verifyToken = require('../middleware/verify-token');
-
-
 
 //verifytoken routes 
 /*
@@ -19,22 +16,22 @@ const verifyToken = require('../middleware/verify-token');
 */
 
 router.post('/', verifyToken, async function (req, res) {
+   
+    console.log(req.user, "req.user here")
     try {
         //allowing forums to have same title, but not by same account
+        console.log(req.user._id)
 
-        const forumsByUser = await Forum.findOne({ forumTitle })
-        if (forumsByUser) {
-            res.status(409).json('sorry! but you already have a forum with that same title')
-        }
+        
         console.log(req.body) //double check here
         const forum = await Forum.create({
             userId: req.user._id,
-            creater: req.user.username,
+            creator: req.user.username,
             ...req.body //emptys key value pairs form req.body into this object
         })
         res.json(forum)
     } catch(err) {
-        res.status(500).json({err: err.message})
+       return res.status(500).json({err: err.message})
     }
 })
 

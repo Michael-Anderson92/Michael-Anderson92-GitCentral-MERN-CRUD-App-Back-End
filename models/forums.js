@@ -7,7 +7,7 @@ const forumSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    creater: {
+    creator: {
         type: String,
         required: true
     },
@@ -18,7 +18,7 @@ const forumSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        minLength: 30,
+        minLength: 5,
         maxLength: 100,
     },
     contents: {
