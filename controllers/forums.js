@@ -60,4 +60,15 @@ router.get('/:forumsId', async function (req, res) {
     }
 })
 
+router.put('/:forumsId', async function(req,res){
+    console.log('put')
+    try{
+        const forumEdit = await Forum.findByIdAndUpdate(req.params.forumsId, req.body)
+        res.json(forumEdit)
+        console.log(forumEdit)
+    }catch{
+        res.status(500).json({ err: err.message })
+    }
+})
+
 module.exports = router
