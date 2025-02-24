@@ -49,7 +49,6 @@ router.get('/', async function (req, res) {
     }
 })
 //get Id
-/*
 router.get('/:forurmsId', async function (req, res) {
     try {
         const selectedForum = await Forum.findById(req.params.forurmsId)
@@ -60,5 +59,5 @@ router.get('/:forurmsId', async function (req, res) {
         console.log('look at form id get request')
     }
 })
-*/
+
 module.exports = router
