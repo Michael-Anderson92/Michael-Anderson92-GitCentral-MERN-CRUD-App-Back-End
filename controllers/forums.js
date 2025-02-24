@@ -16,13 +16,13 @@ const verifyToken = require('../middleware/verify-token');
 */
 
 router.post('/', verifyToken, async function (req, res) {
-   
+
     console.log(req.user, "req.user here")
     try {
         //allowing forums to have same title, but not by same account
         console.log(req.user._id)
 
-        
+
         console.log(req.body) //double check here
         const forum = await Forum.create({
             userId: req.user._id,
@@ -30,8 +30,8 @@ router.post('/', verifyToken, async function (req, res) {
             ...req.body //emptys key value pairs form req.body into this object
         })
         res.json(forum)
-    } catch(err) {
-       return res.status(500).json({err: err.message})
+    } catch (err) {
+        return res.status(500).json({ err: err.message })
     }
 })
 
@@ -60,15 +60,23 @@ router.get('/:forumsId', async function (req, res) {
     }
 })
 // edit needs token
-router.put('/:forumsId',verifyToken, async function(req,res){
+router.put('/:forumsId', verifyToken, async function (req, res) {
     console.log('put')
-    try{
+    try {
         const forumEdit = await Forum.findByIdAndUpdate(req.params.forumsId, req.body)
         res.json(forumEdit)
         console.log(forumEdit)
-    }catch{
+    } catch {
         res.status(500).json({ err: err.message })
     }
 })
-
+router.delete('/:forumsId', verifyToken, async function (req, res) {
+    try {
+        const deletedForum = await Forum.findByIdAndDelete(req.params.forumsId)
+        res.json(deletedForum)
+        console.log('dlete', deletedForum)
+    } catch {
+        res.status(500).json({ err: err.message })
+    }
+})
 module.exports = router
