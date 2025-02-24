@@ -35,12 +35,12 @@ router.post('/', verifyToken, async function (req, res) {
     }
 })
 
-/*
+
 
 //index - no token
 router.get('/', async function (req, res) {
     try {
-        const allForums = await Forum.findAll({})
+        const allForums = await Forum.find({})
         res.json(allForums)
         console.log('allforms! i hope this works')
     } catch (err) {
@@ -49,6 +49,7 @@ router.get('/', async function (req, res) {
     }
 })
 //get Id
+/*
 router.get('/:forurmsId', async function (req, res) {
     try {
         const selectedForum = await Forum.findById(req.params.forurmsId)
