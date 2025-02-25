@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const verifytoken = require('../middleware/verify-token')
+const verifyToken = require('../middleware/verify-token')
 const Post = require('../models/posts')
 
 
@@ -15,7 +15,7 @@ const Post = require('../models/posts')
 -get routes by ID
 
 */
-router.post('/', verifytoken, async function (req, res) {
+router.post('/', verifyToken, async function (req, res) {
     console.log(req.body)
     try {
         const newPost = await Post.create({
@@ -31,7 +31,7 @@ router.post('/', verifytoken, async function (req, res) {
 })
 
 // not done - index 
-router.get('/',  async function (req, res) {
+router.get('/', async function (req, res) {
     try {
         const posts = await Post.find({})
         res.json(posts)
@@ -44,6 +44,16 @@ router.get('/:postId', async function (req, res) {
     try {
         const post = await Post.findById(req.params.postId)
         res.json(post)
+    } catch (err) {
+        res.status(500).json({ err: err.message })
+    }
+})
+
+//edit
+router.put('/:postId', verifyToken, async function (req,res){
+    try {
+        const postEdit = await Post.findByIdAndUpdate(req.params.postId, req.body)
+        res.json(postEdit)
     } catch (err) {
         res.status(500).json({ err: err.message })
     }
