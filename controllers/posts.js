@@ -62,7 +62,7 @@ router.put('/:postId', verifyToken, async function (req, res) {
 router.delete('/:postId', verifyToken, async function (req, res) {
     try {
         const deletedPost = await Post.findByIdAndDelete(req.params.postId)
-        res.json('deleted:',deletedPost)
+        res.json(deletedPost)
     } catch (err) {
         res.status(500).json({err: err.message})
     }
