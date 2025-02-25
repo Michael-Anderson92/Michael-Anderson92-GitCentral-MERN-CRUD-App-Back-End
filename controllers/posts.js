@@ -27,23 +27,26 @@ router.post('/', verifytoken, async function (req, res) {
         res.json(newPost)
     } catch (err) {
         return res.status(500).json({ err: err.message })
-    }})
-/*
+    }
+})
+
 // not done - index 
-router.get('/', async function (req, res) {
+router.get('/',  async function (req, res) {
     try {
-        posts = await Post.find({})
-    } catch
+        const posts = await Post.find({})
+        res.json(posts)
+    } catch (err) {
+        res.status(500).json({ err: err.message })
+    }
 })
 //find one
 router.get('/:postId', async function (req, res) {
     try {
-        post = await Post.findById(req.params.postId)
+        const post = await Post.findById(req.params.postId)
         res.json(post)
-    } catch {
-
-
+    } catch (err) {
+        res.status(500).json({ err: err.message })
     }
 })
-*/
+
 module.exports = router
