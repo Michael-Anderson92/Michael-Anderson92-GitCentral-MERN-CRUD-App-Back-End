@@ -29,6 +29,10 @@ const PostSchema = new mongoose.Schema({
         ref: 'Forum',
         required: true
     },
+    creator:{
+        type: String,
+        required: true
+    },
 
     title: {
         type: String,

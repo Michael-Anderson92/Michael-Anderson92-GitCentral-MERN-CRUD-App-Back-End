@@ -50,12 +50,21 @@ router.get('/:postId', async function (req, res) {
 })
 
 //edit
-router.put('/:postId', verifyToken, async function (req,res){
+router.put('/:postId', verifyToken, async function (req, res) {
     try {
         const postEdit = await Post.findByIdAndUpdate(req.params.postId, req.body)
         res.json(postEdit)
     } catch (err) {
         res.status(500).json({ err: err.message })
+    }
+})
+//delete
+router.delete('/:postId', verifyToken, async function (req, res) {
+    try {
+        const deletedPost = await Post.findByIdAndDelete(req.params.postId)
+        res.json('deleted:',deletedPost)
+    } catch (err) {
+        res.status(500).json({err: err.message})
     }
 })
 
