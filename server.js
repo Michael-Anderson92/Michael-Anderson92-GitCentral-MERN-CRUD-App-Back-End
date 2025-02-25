@@ -17,6 +17,7 @@ const authRouter = require('./controllers/auth');
 const usersRouter = require('./controllers/users');
 const forumsRouter = require('./controllers/forums')
 const postsRouter = require('./controllers/posts')
+const commentsRouter = require('./controllers/comments')
 
 
 // Connect to MongoDB
@@ -45,6 +46,7 @@ app.use('/users', usersRouter);
 app.use('/forums', forumsRouter)
 // app.use(verifyToken)
 app.use('/posts', postsRouter)
+app.use('/posts/:postId/comments', commentsRouter)
 
 // Start the server and listen on port 3000
 app.listen(3000, () => {

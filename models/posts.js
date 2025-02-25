@@ -2,14 +2,22 @@ const mongoose = require('mongoose')
 
 
 const commentSchema = new mongoose.Schema({
-    
-    creator: { //username of commenter
+    postId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+        required: true
+    },
+    commenterId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    commenter: { //username of commenter
         type: String,
         required: true
     },
     createdAt: {
         type: Date,
-        required: true,
         default: Date.now //look into time zone
     },
     contents: {
