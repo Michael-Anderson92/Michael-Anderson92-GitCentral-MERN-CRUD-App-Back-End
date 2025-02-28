@@ -5,7 +5,6 @@ const User = require('../models/users');
 
 const verifyToken = require('../middleware/verify-token');
 
-
 // examples of authenticating controller routes
 router.get('/', verifyToken, async (req, res) => {
   // verifyToken defines req.user!
@@ -13,28 +12,27 @@ router.get('/', verifyToken, async (req, res) => {
   // req.user._id
   try {
     // only return the username property on all the users
-    const users = await User.find({}, "username");
-
+    const users = await User.find({}, 'username');
     res.json(users);
   } catch (err) {
     res.status(500).json({ err: err.message });
   }
 });
 
-router.get('/:userId', verifyToken, async (req, res) => { //come back later
-  console.log(req.params.UserId, 'paramas')
+router.get('/:userId', verifyToken, async (req, res) => {
+  console.log(req.params.userId, 'params');
   try {
-    if (req.User._id !== req.params.userId){
-      return res.status(403).json({ err: "Unauthorized"});
+    if (req.user._id !== req.params.userId) {
+      return res.status(403).json({ err: 'Unauthorized' });
     }
 
-    const User = await User.findById(req.params.userId);
+    const user = await User.findById(req.params.userId);
 
-    if (!User) {
-      return res.status(404).json({ err: 'User not found.'});
+    if (!user) {
+      return res.status(404).json({ err: 'User not found.' });
     }
 
-    res.json({ User });
+    res.json({ user });
   } catch (err) {
     res.status(500).json({ err: err.message });
   }

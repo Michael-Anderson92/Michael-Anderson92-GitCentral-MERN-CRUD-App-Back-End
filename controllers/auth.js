@@ -1,67 +1,78 @@
+// backend/routes/auth.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 const User = require('../models/users');
 
 const saltRounds = 12;
 
-router.post('/sign-up', async (req, res) => {//tested and works
+console.log('JWT_SECRET:', process.env.JWT_SECRET);
+
+router.post('/sign-up', async (req, res) => {
   try {
-    const userInDatabase = await User.findOne({ username: req.body.username });
-    const emailInDatabase = await User.findOne({email: req.body.email})
+    const { username, email, password } = req.body;
 
-    if (!emailRegex.test(req.body.email)){ //checking to see if in correct email format
-      return res.status(409).json({err:'please enter a valid email' })
-    }
+    // Check for existing username
+    const userInDatabase = await User.findOne({ username });
     if (userInDatabase) {
-      return res.status(409).json({err: 'Username already taken.'});
-    }
-    if (emailInDatabase){
-      return res.status(409).json({err:'email already associated with an account'})
+      return res.status(409).json({ error: 'Username already taken' });
     }
 
+    // Check for existing email
+    const emailInDatabase = await User.findOne({ email });
+    if (emailInDatabase) {
+      return res.status(409).json({ error: 'Email already in use' });
+    }
+
+    // Create user with hashed password
     const user = await User.create({
-      username: req.body.username,
-      hashedPassword: bcrypt.hashSync(req.body.password, saltRounds),
-      email: req.body.email,
-     posts: [] //blank list for now
+      username,
+      email,
+      hashedPassword: bcrypt.hashSync(password, saltRounds),
+      posts: [],
     });
-    console.log('Account created', user)
+    console.log('Account created', user);
 
+    // Generate JWT
     const payload = { username: user.username, _id: user._id };
-
-    const token = jwt.sign({ payload }, process.env.JWT_SECRET);
+    const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
+      expiresIn: '1h', // Token expires in 1 hour
+    });
 
     res.status(201).json({ token });
   } catch (err) {
-    res.status(500).json({ err: err.message });
+    console.error('Sign-up error:', err);
+    res.status(500).json({ error: 'Server error during sign-up' });
   }
 });
 
 router.post('/sign-in', async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+    const { username, password } = req.body;
+
+    // Find user by username
+    const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({ err: 'Invalid credentials.' });
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const isPasswordCorrect = bcrypt.compareSync(
-      req.body.password, user.hashedPassword
-    );
+    // Verify password
+    const isPasswordCorrect = bcrypt.compareSync(password, user.hashedPassword);
     if (!isPasswordCorrect) {
-      return res.status(401).json({ err: 'Invalid credentials.' });
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
+    // Generate JWT
     const payload = { username: user.username, _id: user._id };
-
-    const token = jwt.sign({ payload }, process.env.JWT_SECRET);
+    const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
+      expiresIn: '1h', // Token expires in 1 hour
+    });
 
     res.status(200).json({ token });
   } catch (err) {
-    res.status(500).json({ err: err.message });
+    console.error('Sign-in error:', err);
+    res.status(500).json({ error: 'Server error during sign-in' });
   }
 });
 

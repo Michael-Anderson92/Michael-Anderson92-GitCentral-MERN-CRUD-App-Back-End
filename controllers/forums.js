@@ -1,82 +1,94 @@
 const express = require('express');
 const router = express.Router();
-
-const Forum = require('../models/forums')
+const Forum = require('../models/forums');
 const verifyToken = require('../middleware/verify-token');
 
-//verifytoken routes 
-/*
-- post forum
-- edit forum
-- delete forum
-
-//no verify token needed
--get routes -index
--get routes by ID
-*/
-
+// POST /forums - Create a new forum (requires token)
 router.post('/', verifyToken, async function (req, res) {
+  try {
+    console.log('User:', req.user);
+    console.log('Request body:', req.body);
 
-    console.log(req.user, "req.user here")
-    try {
-        //allowing forums to have same title, but not by same account
-        console.log(req.user._id)
+    const forumData = {
+      userId: req.user._id,
+      creator: req.user.username,
+      title: req.body.title, // Map to 'title' from schema
+      contents: req.body.contents || '', // Optional, defaults to empty
+    };
 
-
-        console.log(req.body) //double check here
-        const forum = await Forum.create({
-            userId: req.user._id,
-            creator: req.user.username,
-            ...req.body //emptys key value pairs form req.body into this object
-        })
-        res.json(forum)
-    } catch (err) {
-        return res.status(500).json({ err: err.message })
+    const forum = await Forum.create(forumData);
+    res.status(201).json(forum);
+  } catch (err) {
+    console.error('Error creating forum:', err);
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ error: err.message }); // e.g., title length
     }
-})
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
-
-
-//index - no token
+// GET /forums - Fetch all forums (no token needed)
 router.get('/', async function (req, res) {
-    try {
-        const allForums = await Forum.find({})
-        res.json(allForums)
-        console.log('allforms! i hope this works')
-    } catch (err) {
-        res.status(500).json({ err: err.message })
-        console.log('look at index routing on forum')
-    }
-})
-//get Id - no token
+  try {
+    const forums = await Forum.find({});
+    res.json(forums);
+    console.log('Fetched all forums:', forums);
+  } catch (err) {
+    console.error('Error fetching forums:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /forums/:forumsId - Fetch a specific forum (no token needed)
 router.get('/:forumsId', async function (req, res) {
-    try {
-        const selectedForum = await Forum.findById(req.params.forumsId)
-        res.json(selectedForum)
-        console.log(selectedForum)
-    } catch (err) {
-        res.status(500).json({ err: err.message })
-        console.log('look at form id get request')
+  try {
+    const selectedForum = await Forum.findById(req.params.forumsId);
+    if (!selectedForum) {
+      return res.status(404).json({ error: 'Forum not found' });
     }
-})
-// edit needs token
+    res.json(selectedForum);
+    console.log('Fetched forum:', selectedForum);
+  } catch (err) {
+    console.error('Error fetching forum:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT /forums/:forumsId - Edit a forum (requires token)
 router.put('/:forumsId', verifyToken, async function (req, res) {
-    console.log('put')
-    try {
-        const forumEdit = await Forum.findByIdAndUpdate(req.params.forumsId, req.body)
-        res.json(forumEdit)
-        console.log(forumEdit)
-    } catch {
-        res.status(500).json({ err: err.message })
+  try {
+    const forumEdit = await Forum.findByIdAndUpdate(
+      req.params.forumsId,
+      { title: req.body.title, contents: req.body.contents }, // Update allowed fields
+      { new: true, runValidators: true }
+    );
+    if (!forumEdit) {
+      return res.status(404).json({ error: 'Forum not found' });
     }
-})
+    res.json(forumEdit);
+    console.log('Updated forum:', forumEdit);
+  } catch (err) {
+    console.error('Error updating forum:', err);
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ error: err.message });
+    }
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /forums/:forumsId - Delete a forum (requires token)
 router.delete('/:forumsId', verifyToken, async function (req, res) {
-    try {
-        const deletedForum = await Forum.findByIdAndDelete(req.params.forumsId)
-        res.json(deletedForum)
-        console.log('dlete', deletedForum)
-    } catch {
-        res.status(500).json({ err: err.message })
+  try {
+    const deletedForum = await Forum.findByIdAndDelete(req.params.forumsId);
+    if (!deletedForum) {
+      return res.status(404).json({ error: 'Forum not found' });
     }
-})
-module.exports = router
+    res.json(deletedForum);
+    console.log('Deleted forum:', deletedForum);
+  } catch (err) {
+    console.error('Error deleting forum:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;

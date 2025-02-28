@@ -1,71 +1,67 @@
-const express = require('express')
-const router = express.Router()
-const verifyToken = require('../middleware/verify-token')
-const Post = require('../models/posts')
+const express = require('express');
+const router = express.Router();
+const verifyToken = require('../middleware/verify-token');
+const Post = require('../models/posts');
 
+// Create a new post (authenticated)
+router.post('/', verifyToken, async (req, res) => {
+  try {
+    const newPost = await Post.create({
+      userId: req.user._id,
+      creator: req.user.username,
+      ...req.body,
+    });
+    res.json(newPost);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-//verifytoken routes 
-/*
-- post forum
-- edit forum
-- delete forum
+// Get all posts (public)
+router.get('/', async (req, res) => {
+  try {
+    const posts = await Post.find({});
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-//no verify token needed
--get routes -index
--get routes by ID
+// Get a single post by ID (public)
+router.get('/:postId', async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-*/
-router.post('/', verifyToken, async function (req, res) {
-    console.log(req.body)
-    try {
-        const newPost = await Post.create({
-            userId: req.user._id,
-            creator: req.user.username,
-            ...req.body
-        })
-        console.log(newPost)
-        res.json(newPost)
-    } catch (err) {
-        return res.status(500).json({ err: err.message })
-    }
-})
+// Update a post (authenticated)
+router.put('/:postId', verifyToken, async (req, res) => {
+  try {
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.postId,
+      { ...req.body, userId: req.user._id }, // Ensure userId stays tied to creator
+      { new: true } // Return the updated document
+    );
+    if (!updatedPost) return res.status(404).json({ error: 'Post not found' });
+    res.json(updatedPost);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-// not done - index 
-router.get('/', async function (req, res) {
-    try {
-        const posts = await Post.find({})
-        res.json(posts)
-    } catch (err) {
-        res.status(500).json({ err: err.message })
-    }
-})
-//find one
-router.get('/:postId', async function (req, res) {
-    try {
-        const post = await Post.findById(req.params.postId)
-        res.json(post)
-    } catch (err) {
-        res.status(500).json({ err: err.message })
-    }
-})
+// Delete a post (authenticated)
+router.delete('/:postId', verifyToken, async (req, res) => {
+  try {
+    const deletedPost = await Post.findByIdAndDelete(req.params.postId);
+    if (!deletedPost) return res.status(404).json({ error: 'Post not found' });
+    res.json(deletedPost);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-//edit
-router.put('/:postId', verifyToken, async function (req, res) {
-    try {
-        const postEdit = await Post.findByIdAndUpdate(req.params.postId, req.body)
-        res.json(postEdit)
-    } catch (err) {
-        res.status(500).json({ err: err.message })
-    }
-})
-//delete
-router.delete('/:postId', verifyToken, async function (req, res) {
-    try {
-        const deletedPost = await Post.findByIdAndDelete(req.params.postId)
-        res.json(deletedPost)
-    } catch (err) {
-        res.status(500).json({err: err.message})
-    }
-})
-
-module.exports = router
+module.exports = router;
